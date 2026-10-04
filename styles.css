@@ -1,0 +1,206 @@
+body {
+    box-sizing: border-box;
+    padding: 10px 25px;
+    max-width: 1200px;
+    margin: auto;
+    font-family: 'Roboto', sans-serif;
+}
+
+body>hr {
+    width: 50%;
+}
+
+section {
+    width: 100%;
+    margin: 50px 0;
+}
+
+section h2 {
+    margin-bottom: 40px;
+}
+
+header {
+    width: 100%;
+    margin-bottom: 50px;
+}
+
+.title-bar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+nav {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+nav ul {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin: 0;
+    padding: 0;
+}
+
+nav ul li {
+    display: block;
+}
+
+h2 {
+    text-align: center;
+}
+
+#top-teachers form {
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+}
+
+.teachers-filter-input-container {
+    border-left: 1px dotted black;
+    padding: 3px 15px;
+}
+
+.teachers-filter-input-container:first-child {
+    padding-left: 0;
+    border-left: none;
+}
+
+.top-teachers-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    row-gap: 30px;
+    place-items: center;
+    margin: 30px 0;
+}
+
+.teacher-short-info-container {
+    width: 160px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+}
+
+.teacher-short-info-container img {
+    width: 100%;
+    border-radius: 100%;
+    border: 3px solid orange;
+}
+
+.teacher-name {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.teacher-short-info-img-container {
+    position: relative;
+}
+
+.star-icon {
+    position: absolute;
+    right: 0;
+    top: 8%;
+    width: 32px;
+    height: 32px;
+}
+
+.statistics-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.statistics-table thead th {
+    border-bottom: 1.5px solid black;
+    padding: 12px 16px;
+    text-align: center;
+}
+
+.statistics-table :is(td, th):first-child {
+    text-align: left;
+}
+
+.statistics-table tbody td {
+    padding: 10px 16px;
+    text-align: center;
+}
+
+.statistics-table tbody tr:nth-child(even) {
+    background-color: #fbebfb;
+}
+
+.pagination {
+    display: flex;
+    gap: 12px;
+    margin-top: 18px;
+    font-size: 0.85rem;
+}
+
+.pagination a {
+    text-decoration: none;
+    color: #0284c7;
+}
+
+.pagination a.active {
+    font-weight: 700;
+    color: black;
+}
+
+#favorites {
+    position: relative;
+}
+
+.nav-arrow {
+    position: absolute;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #71717a;
+    top: 30%;
+}
+
+.nav-arrow:hover {
+    color: #18181b;
+}
+
+.nav-arrow svg {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    width: 50px;
+    height: 100px;
+}
+
+.nav-arrow.prev {
+    left: -5%;
+}
+
+.nav-arrow.next {
+    right: -5%;
+}
+
+.favorites-cards {
+    width: 100%;
+    max-height: 200px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-rows: 1fr;
+    gap: 20px;
+    place-items: center;
+    overflow: hidden;
+}
