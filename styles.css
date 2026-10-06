@@ -1,6 +1,11 @@
+:root {
+    --color-accent: #f75c49;
+    --color-grey: #a699a6;
+}
+
 body {
     box-sizing: border-box;
-    padding: 10px 25px;
+    padding: 39px 50px 33px 50px;
     max-width: 1200px;
     margin: auto;
     font-family: 'Roboto', sans-serif;
@@ -8,11 +13,13 @@ body {
 
 body>hr {
     width: 50%;
+    border: 0.5px solid rgb(102, 102, 102);
+    margin-top: 40px;
+    margin-bottom: 20px;
 }
 
 section {
     width: 100%;
-    margin: 50px 0;
 }
 
 section h2 {
@@ -31,19 +38,37 @@ header {
     align-items: center;
 }
 
+.search-form {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: right;
+    gap: 20px;
+}
+
+.teacher-search {
+    padding: 0.1rem 0.4rem;
+    width: 23ch;
+}
+
 nav {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    align-items: center;
+    align-items: end;
+}
+
+.top-nav {
+    margin-top: 50px;
 }
 
 nav ul {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: left;
     align-items: center;
-    gap: 15px;
+    flex-wrap: wrap;
+    gap: 41px;
     margin: 0;
     padding: 0;
 }
@@ -52,8 +77,22 @@ nav ul li {
     display: block;
 }
 
+nav ul li a {
+    color: var(--color-accent);
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 500;
+
+}
+
+.top-nav ul li a {
+    font-weight: 700;
+}
+
 h2 {
     text-align: center;
+    font-size: 2rem;
+    font-weight: 500;
 }
 
 #top-teachers form {
@@ -65,7 +104,7 @@ h2 {
 
 .teachers-filter-input-container {
     border-left: 1px dotted black;
-    padding: 3px 15px;
+    padding: 0 20px;
 }
 
 .teachers-filter-input-container:first-child {
@@ -73,21 +112,38 @@ h2 {
     border-left: none;
 }
 
+.teachers-filter-input-container label {
+    color: var(--color-grey);
+    font-size: 0.85rem;
+    margin-right: 17px;
+}
+
+.teachers-filter-input-container label:has(input) {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.teachers-filter-input-container select {
+    height: 100%;
+    padding: 7px 5px;
+}
+
 .top-teachers-list {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    row-gap: 30px;
+    row-gap: 40px;
     place-items: center;
-    margin: 30px 0;
+    margin: 60px 0;
 }
 
 .teacher-short-info-container {
-    width: 160px;
+    width: 150px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    gap: 15px;
+    /* gap: 15px; */
 }
 
 .teacher-short-info-container img {
@@ -100,6 +156,20 @@ h2 {
     display: flex;
     flex-direction: column;
     align-items: center;
+    font-weight: 500;
+    font-size: 1.25rem;
+    margin-top: 21px;
+    margin-bottom: 16px;
+}
+
+.teacher-domain {
+    color: var(--color-grey);
+    margin-bottom: 11px;
+    font-size: 0.9rem;
+}
+
+.teacher-country {
+    font-size: 0.75rem;
 }
 
 .teacher-short-info-img-container {
@@ -114,15 +184,21 @@ h2 {
     height: 32px;
 }
 
+div:has(.statistics-table) {
+    overflow: auto;
+}
+
 .statistics-table {
     width: 100%;
     border-collapse: collapse;
+    color: #222222;
 }
 
 .statistics-table thead th {
     border-bottom: 1.5px solid black;
     padding: 12px 16px;
     text-align: center;
+    font-weight: normal;
 }
 
 .statistics-table :is(td, th):first-child {
@@ -135,13 +211,13 @@ h2 {
 }
 
 .statistics-table tbody tr:nth-child(even) {
-    background-color: #fbebfb;
+    background-color: #f9f5f9;
 }
 
 .pagination {
     display: flex;
     gap: 12px;
-    margin-top: 18px;
+    margin-top: 28px;
     font-size: 0.85rem;
 }
 
@@ -157,6 +233,7 @@ h2 {
 
 #favorites {
     position: relative;
+    margin-bottom: 60px;
 }
 
 .nav-arrow {
@@ -180,8 +257,6 @@ h2 {
     fill: none;
     stroke: currentColor;
     stroke-width: 2.5;
-    stroke-linecap: round;
-    stroke-linejoin: round;
     width: 50px;
     height: 100px;
 }
@@ -196,11 +271,40 @@ h2 {
 
 .favorites-cards {
     width: 100%;
-    max-height: 200px;
+    max-height: 260px;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     grid-template-rows: 1fr;
     gap: 20px;
     place-items: center;
     overflow: hidden;
+}
+
+h1 {
+    font-family: "Noto Serif NP Hmong", serif;
+    font-size: 3rem;
+    font-weight: 700;
+    color: white;
+    text-shadow: 
+        -2px -1px 1px var(--color-accent),
+        2px 1px 1px black;
+    margin: 0;
+}
+
+.btn {
+    color: var(--color-accent);
+    background-color: white;
+    border: solid 1px var(--color-accent);
+    padding: 10px 23px;
+    font-weight: 550;
+}
+
+.add-teacher-btn {
+    font-size: 1.1rem;
+    width: 170px;
+    height: 50px;
+}
+
+#about {
+    margin-top: 50px;
 }

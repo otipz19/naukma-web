@@ -6,8 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="otipz19" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+NP+Hmong:wght@400..700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="styles.css" />
     <title>Teachinder</title>
 </head>
@@ -17,14 +19,14 @@
         <div class="title-bar">
             <h1>Teachinder</h1>
 
-            <form>
-                <input type="text" name="teacher-search" id="teacher-search"
+            <form class="search-form">
+                <input type="text" name="teacher-search" id="teacher-search" class="teacher-search"
                     placeholder="Name, note or age to search" />
-                <button type="submit">Search</button>
+                <button type="submit" class="btn">Search</button>
             </form>
         </div>
 
-        <nav>
+        <nav class="top-nav">
             <ul>
                 <li><a href="#top-teachers">Teachers</a></li>
                 <li><a href="#statistics">Statistics</a></li>
@@ -32,7 +34,7 @@
                 <li><a href="#about">About</a></li>
             </ul>
 
-            <button type="button">Add Teacher</button>
+            <button type="button" class="btn add-teacher-btn">Add Teacher</button>
         </nav>
     </header>
 
@@ -98,11 +100,11 @@
                 </div>
 
                 <div class="teacher-name">
-                    <span>John</span>
-                    <span>Doe</span>
+                    <span>Ihor</span>
+                    <span>Tkachuk</span>
                 </div>
-                <span>Chemistry</span>
-                <span>Ukraine</span>
+                <span class="teacher-domain">Chemistry</span>
+                <span class="teacher-country">Ukraine</span>
             </div>
 
             <div class="teacher-short-info-container">
@@ -111,8 +113,8 @@
                     <span>John</span>
                     <span>Doe</span>
                 </div>
-                <span>Chemistry</span>
-                <span>Ukraine</span>
+                <span class="teacher-domain">Chemistry</span>
+                <span class="teacher-country">Ukraine</span>
             </div>
 
             <div class="teacher-short-info-container">
@@ -129,8 +131,8 @@
                     <span>John</span>
                     <span>Doe</span>
                 </div>
-                <span>Chemistry</span>
-                <span>Ukraine</span>
+                <span class="teacher-domain">Chemistry</span>
+                <span class="teacher-country">Ukraine</span>
             </div>
 
             <div class="teacher-short-info-container">
@@ -139,8 +141,8 @@
                     <span>John</span>
                     <span>Doe</span>
                 </div>
-                <span>Chemistry</span>
-                <span>Ukraine</span>
+                <span class="teacher-domain">Chemistry</span>
+                <span class="teacher-country">Ukraine</span>
             </div>
 
             <div class="teacher-short-info-container">
@@ -149,8 +151,8 @@
                     <span>John</span>
                     <span>Doe</span>
                 </div>
-                <span>Chemistry</span>
-                <span>Ukraine</span>
+                <span class="teacher-domain">Chemistry</span>
+                <span class="teacher-country">Ukraine</span>
             </div>
 
             <div class="teacher-short-info-container">
@@ -159,8 +161,8 @@
                     <span>John</span>
                     <span>Doe</span>
                 </div>
-                <span>Chemistry</span>
-                <span>Ukraine</span>
+                <span class="teacher-domain">Chemistry</span>
+                <span class="teacher-country">Ukraine</span>
             </div>
 
             <div class="teacher-short-info-container">
@@ -169,8 +171,8 @@
                     <span>John</span>
                     <span>Doe</span>
                 </div>
-                <span>Chemistry</span>
-                <span>Ukraine</span>
+                <span class="teacher-domain">Chemistry</span>
+                <span class="teacher-country">Ukraine</span>
             </div>
 
             <div class="teacher-short-info-container">
@@ -179,8 +181,8 @@
                     <span>John</span>
                     <span>Doe</span>
                 </div>
-                <span>Chemistry</span>
-                <span>Ukraine</span>
+                <span class="teacher-domain">Chemistry</span>
+                <span class="teacher-country">Ukraine</span>
             </div>
         </div>
     </section>
@@ -190,48 +192,50 @@
     <section id="statistics">
         <h2>Statistics</h2>
 
-        <table class="statistics-table">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Specialty</th>
-                    <th>Age</th>
-                    <th>Gender</th>
-                    <th>Nationality</th>
-                </tr>
-            </thead>
+        <div>
+            <table class="statistics-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Specialty</th>
+                        <th>Age</th>
+                        <th>Gender</th>
+                        <th>Nationality</th>
+                    </tr>
+                </thead>
 
-            <tbody>
-                <tr>
-                    <td>John Doe</td>
-                    <td>Software Engineering</td>
-                    <td>42</td>
-                    <td>Apache</td>
-                    <td>Chad</td>
-                </tr>
-                <tr>
-                    <td>John Doe</td>
-                    <td>Software Engineering</td>
-                    <td>42</td>
-                    <td>Apache</td>
-                    <td>Chad</td>
-                </tr>
-                <tr>
-                    <td>John Doe</td>
-                    <td>Software Engineering</td>
-                    <td>42</td>
-                    <td>Apache</td>
-                    <td>Chad</td>
-                </tr>
-                <tr>
-                    <td>John Doe</td>
-                    <td>Software Engineering</td>
-                    <td>42</td>
-                    <td>Apache</td>
-                    <td>Chad</td>
-                </tr>
-            </tbody>
-        </table>
+                <tbody>
+                    <tr>
+                        <td>John Doe</td>
+                        <td>Software Engineering</td>
+                        <td>42</td>
+                        <td>Apache</td>
+                        <td>Chad</td>
+                    </tr>
+                    <tr>
+                        <td>John Doe</td>
+                        <td>Software Engineering</td>
+                        <td>42</td>
+                        <td>Apache</td>
+                        <td>Chad</td>
+                    </tr>
+                    <tr>
+                        <td>John Doe</td>
+                        <td>Software Engineering</td>
+                        <td>42</td>
+                        <td>Apache</td>
+                        <td>Chad</td>
+                    </tr>
+                    <tr>
+                        <td>John Doe</td>
+                        <td>Software Engineering</td>
+                        <td>42</td>
+                        <td>Apache</td>
+                        <td>Chad</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
         <div class="pagination">
             <a href="#" class="active">1</a>
@@ -251,6 +255,8 @@
             </svg>
         </button>
 
+        <h2>Favorites</h2>
+
         <div class="favorites-cards">
             <div class="teacher-short-info-container">
                 <img src="images/random-person_4.jpeg" alt="teacher" />
@@ -258,7 +264,7 @@
                     <span>John</span>
                     <span>Doe</span>
                 </div>
-                <span>Ukraine</span>
+                <span class="teacher-country">Ukraine</span>
             </div>
 
             <div class="teacher-short-info-container">
@@ -267,7 +273,7 @@
                     <span>John</span>
                     <span>Doe</span>
                 </div>
-                <span>Ukraine</span>
+                <span class="teacher-country">Ukraine</span>
             </div>
 
             <div class="teacher-short-info-container">
@@ -276,7 +282,7 @@
                     <span>John</span>
                     <span>Doe</span>
                 </div>
-                <span>Ukraine</span>
+                <span class="teacher-country">Ukraine</span>
             </div>
 
             <div class="teacher-short-info-container">
@@ -285,7 +291,7 @@
                     <span>John</span>
                     <span>Doe</span>
                 </div>
-                <span>Ukraine</span>
+                <span class="teacher-country">Ukraine</span>
             </div>
 
             <div class="teacher-short-info-container">
@@ -294,7 +300,7 @@
                     <span>John</span>
                     <span>Doe</span>
                 </div>
-                <span>Ukraine</span>
+                <span class="teacher-country">Ukraine</span>
             </div>
         </div>
 
@@ -337,7 +343,7 @@
                 <li><a href="#about">About</a></li>
             </ul>
 
-            <button type="button">Add Teacher</button>
+            <button type="button" class="btn add-teacher-btn">Add Teacher</button>
         </nav>
     </footer>
 </body>
