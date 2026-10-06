@@ -34,7 +34,7 @@
                 <li><a href="#about">About</a></li>
             </ul>
 
-            <button type="button" class="btn add-teacher-btn">Add Teacher</button>
+            <button type="button" class="btn add-teacher-btn" popovertarget="add-teacher-popup">Add Teacher</button>
         </nav>
     </header>
 
@@ -384,7 +384,7 @@
                 <li><a href="#about">About</a></li>
             </ul>
 
-            <button type="button" class="btn add-teacher-btn">Add Teacher</button>
+            <button type="button" class="btn add-teacher-btn" popovertarget="add-teacher-popup">Add Teacher</button>
         </nav>
     </footer>
 
@@ -392,9 +392,7 @@
         <div class="teacher-dialog-header">
             <h3 class="teacher-dialog-title">Teacher Info</h3>
             <button type="button" class="teacher-dialog-close-btn" popovertarget="teacher-info-popup"
-                popovertargetaction="hide">
-                ✕
-            </button>
+                popovertargetaction="hide" aria-label="Close dialog">✕</button>
         </div>
 
         <div class="teacher-dialog-content">
@@ -432,6 +430,91 @@
 
             <a href="#" class="teacher-dialog-map-link">toggle map</a>
         </div>
+    </dialog>
+
+    <dialog id="add-teacher-popup" popover="auto" class="teacher-dialog add-teacher-dialog">
+        <div class="teacher-dialog-header">
+            <h3 class="teacher-dialog-title">Add Teacher</h3>
+            <button type="button" class="teacher-dialog-close-btn" popovertarget="add-teacher-popup"
+                popovertargetaction="hide" aria-label="Close dialog">✕</button>
+        </div>
+
+        <form class="add-teacher-form">
+            <div class="form-group">
+                <label for="new-teacher-name">Name</label>
+                <input type="text" id="new-teacher-name" name="name" placeholder="Enter name" required />
+            </div>
+
+            <div class="form-group">
+                <label for="new-teacher-speciality">Speciality</label>
+                <select id="new-teacher-speciality" name="speciality">
+                    <option value="Mathematics" selected>Mathematics</option>
+                    <option value="Physics">Physics</option>
+                    <option value="Chemistry">Chemistry</option>
+                    <option value="Computer Science">Computer Science</option>
+                    <option value="Biology">Biology</option>
+                </select>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="new-teacher-country">Country</label>
+                    <select id="new-teacher-country" name="country">
+                        <option value="Ukraine" selected>Ukraine</option>
+                        <option value="USA">USA</option>
+                        <option value="UK">UK</option>
+                        <option value="Germany">Germany</option>
+                        <option value="France">France</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="new-teacher-city">City</label>
+                    <input type="text" id="new-teacher-city" name="city" />
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="new-teacher-email">Email</label>
+                    <input type="email" id="new-teacher-email" name="email" />
+                </div>
+
+                <div class="form-group">
+                    <label for="new-teacher-phone">Phone</label>
+                    <input type="tel" id="new-teacher-phone" name="phone" />
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="new-teacher-dob">Date of birth</label>
+                    <input type="date" id="new-teacher-dob" name="dob" />
+                </div>
+            </div>
+
+            <div class="form-group-inline">
+                <span class="form-inline-label">Sex</span>
+                <div class="form-radio-group">
+                    <label for="sex-male">Male</label>
+                    <input type="radio" id="sex-male" name="sex" value="male" />
+                    <label for="sex-female">Female</label>
+                    <input type="radio" id="sex-female" name="sex" value="female" />
+                </div>
+            </div>
+
+            <div class="form-group-inline">
+                <label for="new-teacher-bg-color" class="form-inline-label">Background color</label>
+                <input type="color" id="new-teacher-bg-color" name="bg-color" value="#ffffff" />
+            </div>
+
+            <div class="form-group">
+                <label for="new-teacher-notes">Notes (optional)</label>
+                <textarea id="new-teacher-notes" name="notes" rows="4"></textarea>
+            </div>
+
+            <button type="submit" class="btn add-teacher-submit-btn">Add</button>
+        </form>
     </dialog>
 </body>
 
