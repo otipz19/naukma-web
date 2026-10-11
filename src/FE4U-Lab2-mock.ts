@@ -1,4 +1,6 @@
 export type Gender = "male" | "female";
+export type Coordinates = { latitude: string; longitude: string };
+export type Timezone = { offset: string; description: string };
 
 export interface RandomUser {
   gender: Gender;
@@ -13,8 +15,8 @@ export interface RandomUser {
     state: string;
     country: string;
     postcode: number | string;
-    coordinates: { latitude: string; longitude: string };
-    timezone: { offset: string; description: string };
+    coordinates: Coordinates;
+    timezone: Timezone;
   };
   email: string;
   login: {
@@ -48,8 +50,8 @@ export interface AdditionalUser {
   state?: string;
   country?: string;
   postcode?: number | string;
-  coordinates?: { latitude: string; longitude: string };
-  timezone?: { offset: string; description: string };
+  coordinates?: Coordinates;
+  timezone?: Timezone;
   email?: string;
   b_day?: string;
   phone?: string;
