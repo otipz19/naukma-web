@@ -43,7 +43,7 @@
     <section id="top-teachers">
         <h2>Top Teachers</h2>
 
-        <form>
+        <form class="teachers-filter-form">
             <div class="teachers-filter-input-container">
                 <label for="age-select">Age</label>
                 <select id="age-select" name="age">
@@ -51,16 +51,14 @@
                     <option value="18-31">18-31</option>
                     <option value="32-42">32-42</option>
                     <option value="43-67">43-67</option>
+                    <option value="68-150">68+</option>
                 </select>
             </div>
 
             <div class="teachers-filter-input-container">
-                <label for="region-select">Region</label>
-                <select id="region-select" name="region">
+                <label for="country-select">Country</label>
+                <select id="country-select" name="country">
                     <option value="all" selected>All</option>
-                    <option value="europe">Europe</option>
-                    <option value="asia">Asia</option>
-                    <option value="north-america">North America</option>
                 </select>
             </div>
 
@@ -81,134 +79,14 @@
             </div>
 
             <div class="teachers-filter-input-container">
-                <label for="only-favotires-checkbox">
-                    <input type="checkbox" id="only-favotires-checkbox" name="only-favotires" />
+                <label for="only-favorites-checkbox">
+                    <input type="checkbox" id="only-favorites-checkbox" name="only-favorites" />
                     Only favorites
                 </label>
             </div>
         </form>
 
-        <div class="top-teachers-list">
-            <div class="teacher-short-info-container">
-                <div class="teacher-short-info-img-container">
-                    <svg class="star-icon" viewBox="0 0 24 24" width="24" height="24" fill="yellow">
-                        <path stroke="black" stroke-width="0.2" stroke-linejoin="round"
-                            d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                    </svg>
-
-                    <button type="button" class="teacher-photo-container" popovertarget="teacher-info-popup"
-                        aria-label="Open Ihor Tkachuk details">
-                        <img src="images/random-person_4.jpeg" alt="teacher" />
-                    </button>
-                </div>
-
-                <div class="teacher-name">
-                    <span>Ihor</span>
-                    <span>Tkachuk</span>
-                </div>
-                <span class="teacher-domain">Chemistry</span>
-                <span class="teacher-country">Ukraine</span>
-            </div>
-
-            <div class="teacher-short-info-container">
-                <button type="button" class="teacher-photo-container" popovertarget="teacher-info-popup"
-                    aria-label="Open teacher details">
-                    <img src="images/random-person_2.jpeg" alt="teacher" />
-                </button>
-                <div class="teacher-name">
-                    <span>John</span>
-                    <span>Doe</span>
-                </div>
-                <span class="teacher-domain">Chemistry</span>
-                <span class="teacher-country">Ukraine</span>
-            </div>
-
-            <div class="teacher-short-info-container">
-                <div class="teacher-short-info-img-container">
-                    <svg class="star-icon" viewBox="0 0 24 24" width="24" height="24" fill="yellow">
-                        <path stroke="black" stroke-width="0.2" stroke-linejoin="round"
-                            d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                    </svg>
-
-                    <button type="button" class="teacher-photo-container" popovertarget="teacher-info-popup"
-                        aria-label="Open teacher details">
-                        <img src="images/random-person_3.jpeg" alt="teacher" />
-                    </button>
-                </div>
-
-                <div class="teacher-name">
-                    <span>John</span>
-                    <span>Doe</span>
-                </div>
-                <span class="teacher-domain">Chemistry</span>
-                <span class="teacher-country">Ukraine</span>
-            </div>
-
-            <div class="teacher-short-info-container">
-                <button type="button" class="teacher-photo-container" popovertarget="teacher-info-popup"
-                    aria-label="Open teacher details">
-                    <img src="images/random-person_4.jpeg" alt="teacher" />
-                </button>
-                <div class="teacher-name">
-                    <span>John</span>
-                    <span>Doe</span>
-                </div>
-                <span class="teacher-domain">Chemistry</span>
-                <span class="teacher-country">Ukraine</span>
-            </div>
-
-            <div class="teacher-short-info-container">
-                <button type="button" class="teacher-photo-container" popovertarget="teacher-info-popup"
-                    aria-label="Open teacher details">
-                    <img src="images/random-person_5.jpeg" alt="teacher" />
-                </button>
-                <div class="teacher-name">
-                    <span>John</span>
-                    <span>Doe</span>
-                </div>
-                <span class="teacher-domain">Chemistry</span>
-                <span class="teacher-country">Ukraine</span>
-            </div>
-
-            <div class="teacher-short-info-container">
-                <button type="button" class="teacher-photo-container" popovertarget="teacher-info-popup"
-                    aria-label="Open teacher details">
-                    <img src="images/random-person_6.jpeg" alt="teacher" />
-                </button>
-                <div class="teacher-name">
-                    <span>John</span>
-                    <span>Doe</span>
-                </div>
-                <span class="teacher-domain">Chemistry</span>
-                <span class="teacher-country">Ukraine</span>
-            </div>
-
-            <div class="teacher-short-info-container">
-                <button type="button" class="teacher-photo-container" popovertarget="teacher-info-popup"
-                    aria-label="Open teacher details">
-                    <img src="images/random-person_7.jpeg" alt="teacher" />
-                </button>
-                <div class="teacher-name">
-                    <span>John</span>
-                    <span>Doe</span>
-                </div>
-                <span class="teacher-domain">Chemistry</span>
-                <span class="teacher-country">Ukraine</span>
-            </div>
-
-            <div class="teacher-short-info-container">
-                <button type="button" class="teacher-photo-container" popovertarget="teacher-info-popup"
-                    aria-label="Open teacher details">
-                    <img src="images/random-person_8.jpeg" alt="teacher" />
-                </button>
-                <div class="teacher-name">
-                    <span>John</span>
-                    <span>Doe</span>
-                </div>
-                <span class="teacher-domain">Chemistry</span>
-                <span class="teacher-country">Ukraine</span>
-            </div>
-        </div>
+        <div class="top-teachers-list"></div>
     </section>
 
     <hr />
@@ -220,56 +98,20 @@
             <table class="statistics-table">
                 <thead>
                     <tr>
-                        <th>
-                            Name
-                        </th>
-                        <th>Specialty</th>
-                        <th>Age</th>
+                        <th data-sort="full_name">Name</th>
+                        <th data-sort="course">Specialty</th>
+                        <th data-sort="age">Age</th>
+                        <th data-sort="b_date">Birthday</th>
                         <th>Gender</th>
-                        <th>Nationality</th>
+                        <th data-sort="country">Nationality</th>
                     </tr>
                 </thead>
 
-                <tbody>
-                    <tr>
-                        <td>John Doe</td>
-                        <td>Software Engineering</td>
-                        <td>42</td>
-                        <td>Apache</td>
-                        <td>Chad</td>
-                    </tr>
-                    <tr>
-                        <td>John Doe</td>
-                        <td>Software Engineering</td>
-                        <td>42</td>
-                        <td>Apache</td>
-                        <td>Chad</td>
-                    </tr>
-                    <tr>
-                        <td>John Doe</td>
-                        <td>Software Engineering</td>
-                        <td>42</td>
-                        <td>Apache</td>
-                        <td>Chad</td>
-                    </tr>
-                    <tr>
-                        <td>John Doe</td>
-                        <td>Software Engineering</td>
-                        <td>42</td>
-                        <td>Apache</td>
-                        <td>Chad</td>
-                    </tr>
-                </tbody>
+                <tbody></tbody>
             </table>
         </div>
 
-        <div class="pagination">
-            <a href="#" class="active">1</a>
-            <a href="#">2</a>
-            <a href="#">3</a>
-            <span>...</span>
-            <a href="#">Last</a>
-        </div>
+        <div class="pagination"></div>
     </section>
 
     <hr />
@@ -283,67 +125,7 @@
 
         <h2>Favorites</h2>
 
-        <div class="favorites-cards">
-            <div class="teacher-short-info-container">
-                <button type="button" class="teacher-photo-container" popovertarget="teacher-info-popup"
-                    aria-label="Open teacher details">
-                    <img src="images/random-person_4.jpeg" alt="teacher" />
-                </button>
-                <div class="teacher-name">
-                    <span>John</span>
-                    <span>Doe</span>
-                </div>
-                <span class="teacher-country">Ukraine</span>
-            </div>
-
-            <div class="teacher-short-info-container">
-                <button type="button" class="teacher-photo-container" popovertarget="teacher-info-popup"
-                    aria-label="Open teacher details">
-                    <img src="images/random-person_4.jpeg" alt="teacher" />
-                </button>
-                <div class="teacher-name">
-                    <span>John</span>
-                    <span>Doe</span>
-                </div>
-                <span class="teacher-country">Ukraine</span>
-            </div>
-
-            <div class="teacher-short-info-container">
-                <button type="button" class="teacher-photo-container" popovertarget="teacher-info-popup"
-                    aria-label="Open teacher details">
-                    <img src="images/random-person_4.jpeg" alt="teacher" />
-                </button>
-                <div class="teacher-name">
-                    <span>John</span>
-                    <span>Doe</span>
-                </div>
-                <span class="teacher-country">Ukraine</span>
-            </div>
-
-            <div class="teacher-short-info-container">
-                <button type="button" class="teacher-photo-container" popovertarget="teacher-info-popup"
-                    aria-label="Open teacher details">
-                    <img src="images/random-person_4.jpeg" alt="teacher" />
-                </button>
-                <div class="teacher-name">
-                    <span>John</span>
-                    <span>Doe</span>
-                </div>
-                <span class="teacher-country">Ukraine</span>
-            </div>
-
-            <div class="teacher-short-info-container">
-                <button type="button" class="teacher-photo-container" popovertarget="teacher-info-popup"
-                    aria-label="Open teacher details">
-                    <img src="images/random-person_4.jpeg" alt="teacher" />
-                </button>
-                <div class="teacher-name">
-                    <span>John</span>
-                    <span>Doe</span>
-                </div>
-                <span class="teacher-country">Ukraine</span>
-            </div>
-        </div>
+        <div class="favorites-cards"></div>
 
         <button class="nav-arrow next" aria-label="Next">
             <svg viewBox="0 0 24 24" width="24" height="24">
@@ -397,38 +179,32 @@
 
         <div class="teacher-dialog-content">
             <div class="teacher-dialog-profile">
-                <img src="images/random-person_4.jpeg" alt="Ihor Tkachuk" class="teacher-dialog-photo" />
+                <div class="teacher-dialog-photo"></div>
 
                 <div class="teacher-dialog-details">
                     <div class="teacher-dialog-name-row">
-                        <h2 class="teacher-dialog-name">Ihor Tkachuk</h2>
-                        <svg class="teacher-dialog-star" viewBox="0 0 24 24" width="24" height="24">
-                            <path
-                                d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                        </svg>
+                        <h2 class="teacher-dialog-name"></h2>
+                        <button type="button" class="teacher-dialog-star-btn" aria-label="Toggle favorite">
+                            <svg class="teacher-dialog-star" viewBox="0 0 24 24" width="24" height="24">
+                                <path
+                                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                            </svg>
+                        </button>
                     </div>
 
-                    <div class="teacher-dialog-specialty">Chemistry</div>
-                    <div class="teacher-dialog-meta">Kyiv, Ukraine</div>
-                    <div class="teacher-dialog-meta">35, Male</div>
+                    <div class="teacher-dialog-specialty"></div>
+                    <div class="teacher-dialog-meta teacher-dialog-location"></div>
+                    <div class="teacher-dialog-meta teacher-dialog-age-gender"></div>
                     <div class="teacher-dialog-meta">
-                        <a href="mailto:ihor_tkachuk@domain.com" class="teacher-dialog-link">ihor_tkachuk@domain.com</a>
+                        <a class="teacher-dialog-link teacher-dialog-email"></a>
                     </div>
-                    <div class="teacher-dialog-meta">+380964993252</div>
+                    <div class="teacher-dialog-meta teacher-dialog-phone"></div>
                 </div>
             </div>
 
-            <p class="teacher-dialog-description">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab autem consectetur culpa cumque, distinctio
-                dolor dolore
-                dolorem doloremque ea explicabo facilis nam nesciunt nisi pariatur perspiciatis porro quis similique
-                temporibus veniam
-                veritatis? A ab ad, aliquam amet consequatur cupiditate debitis deserunt doloribus dolorum earum eius
-                eos minus nostrum odit
-                omnis perferendis...
-            </p>
+            <p class="teacher-dialog-description"></p>
 
-            <a href="#" class="teacher-dialog-map-link">toggle map</a>
+            <a href="#" class="teacher-dialog-map-link" target="_blank" rel="noopener">toggle map</a>
         </div>
     </dialog>
 
@@ -447,25 +223,13 @@
 
             <div class="form-group">
                 <label for="new-teacher-speciality">Speciality</label>
-                <select id="new-teacher-speciality" name="speciality">
-                    <option value="Mathematics" selected>Mathematics</option>
-                    <option value="Physics">Physics</option>
-                    <option value="Chemistry">Chemistry</option>
-                    <option value="Computer Science">Computer Science</option>
-                    <option value="Biology">Biology</option>
-                </select>
+                <select id="new-teacher-speciality" name="speciality" required></select>
             </div>
 
             <div class="form-row">
                 <div class="form-group">
                     <label for="new-teacher-country">Country</label>
-                    <select id="new-teacher-country" name="country">
-                        <option value="Ukraine" selected>Ukraine</option>
-                        <option value="USA">USA</option>
-                        <option value="UK">UK</option>
-                        <option value="Germany">Germany</option>
-                        <option value="France">France</option>
-                    </select>
+                    <select id="new-teacher-country" name="country" required></select>
                 </div>
 
                 <div class="form-group">
@@ -477,19 +241,19 @@
             <div class="form-row">
                 <div class="form-group">
                     <label for="new-teacher-email">Email</label>
-                    <input type="email" id="new-teacher-email" name="email" />
+                    <input type="email" id="new-teacher-email" name="email" required />
                 </div>
 
                 <div class="form-group">
                     <label for="new-teacher-phone">Phone</label>
-                    <input type="tel" id="new-teacher-phone" name="phone" />
+                    <input type="tel" id="new-teacher-phone" name="phone" placeholder="+380..." required />
                 </div>
             </div>
 
             <div class="form-row">
                 <div class="form-group">
                     <label for="new-teacher-dob">Date of birth</label>
-                    <input type="date" id="new-teacher-dob" name="dob" />
+                    <input type="date" id="new-teacher-dob" name="dob" required />
                 </div>
             </div>
 
@@ -497,7 +261,7 @@
                 <span class="form-inline-label">Sex</span>
                 <div class="form-radio-group">
                     <label for="sex-male">Male</label>
-                    <input type="radio" id="sex-male" name="sex" value="male" />
+                    <input type="radio" id="sex-male" name="sex" value="male" required />
                     <label for="sex-female">Female</label>
                     <input type="radio" id="sex-female" name="sex" value="female" />
                 </div>
@@ -513,9 +277,13 @@
                 <textarea id="new-teacher-notes" name="notes" rows="4"></textarea>
             </div>
 
+            <p class="form-error" role="alert"></p>
+
             <button type="submit" class="btn add-teacher-submit-btn">Add</button>
         </form>
     </dialog>
+
+    <script type="module" src="dist/app.js"></script>
 </body>
 
 </html>

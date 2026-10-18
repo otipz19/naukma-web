@@ -1,26 +1,27 @@
 import { Teacher } from "./task1.js";
 
-export function sortTeachers(teachers: Teacher[], sortProp: 'full_name' | 'age' | 'b_date' | 'country', isDesc: boolean = false): Teacher[] {
+export type TeacherSortProp = 'full_name' | 'course' | 'age' | 'b_date' | 'country';
+
+export function sortTeachers(teachers: Teacher[], sortProp: TeacherSortProp, isDesc: boolean = false): Teacher[] {
+    const dir = isDesc ? -1 : 1;
     let comparator: (a: Teacher, b: Teacher) => number;
 
     if (sortProp === 'full_name') {
-        comparator = (a, b) => a.full_name.localeCompare(b.full_name);
+        comparator = (a, b) => dir * a.full_name.localeCompare(b.full_name);
+    } else if (sortProp === 'course') {
+        comparator = (a, b) => dir * a.course.localeCompare(b.course);
     } else if (sortProp === 'age') {
-        comparator = (a, b) => compareMaybeUndefined(a, b, t => t.age, (l, r) => l - r);
+        comparator = (a, b) => compareMaybeUndefined(a, b, t => t.age, (l, r) => dir * (l - r));
     } else if (sortProp === 'b_date') {
-        comparator = (a, b) => compareMaybeUndefined(a, b, t => t.b_date, (l, r) => new Date(l).getTime() - new Date(r).getTime());
+        comparator = (a, b) => compareMaybeUndefined(a, b, t => t.b_date, (l, r) => dir * (new Date(l).getTime() - new Date(r).getTime()));
     } else {
-        comparator = (a, b) => compareMaybeUndefined(a, b, t => t.country, (l, r) => l.localeCompare(r));
-    }
-
-    if (isDesc) {
-        const ascComparator = comparator;
-        comparator = (a, b) => ascComparator(b, a);
+        comparator = (a, b) => compareMaybeUndefined(a, b, t => t.country, (l, r) => dir * l.localeCompare(r));
     }
 
     return [...teachers].sort(comparator);
 }
 
+// Missing values always go last, regardless of direction
 function compareMaybeUndefined<P>(a: Teacher, b: Teacher, selector: (t: Teacher) => P | undefined | null, comparator: (l: P, r: P) => number): number {
     const l = selector(a);
     const r = selector(b);
