@@ -53,3 +53,16 @@ export function byMinAge(q: number): FindTeacherPredicate {
 export function byMaxAge(q: number): FindTeacherPredicate {
     return (t: Teacher) => t.age != undefined && t.age <= q;
 }
+
+// Matches by name or note substring (case-insensitive), or by exact age when query is a number
+export function searchTeachers(teachers: Teacher[], query: string): Teacher[] {
+    const q = query.trim().toLowerCase();
+    if (q.length === 0) {
+        return teachers;
+    }
+    const age = /^\d+$/.test(q) ? Number(q) : undefined;
+    return teachers.filter(t =>
+        t.full_name.toLowerCase().includes(q)
+        || (t.note != undefined && t.note.toLowerCase().includes(q))
+        || (age != undefined && t.age === age));
+}

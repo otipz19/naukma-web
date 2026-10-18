@@ -15,7 +15,7 @@ export const COURSES = [
     "Statistics",
 ] as const;
 
-type Course = (typeof COURSES)[number];
+export type Course = (typeof COURSES)[number];
 
 export interface Teacher {
     id: string;
@@ -84,7 +84,7 @@ function getRandomCourse(): Course {
     return COURSES[Math.floor(Math.random() * COURSES.length)]!;
 }
 
-function getRandomHexColor(): string {
+export function getRandomHexColor(): string {
     return `#${Math.floor(Math.random() * 0x1000000).toString(16).padStart(6, "0")}`;
 }
 
@@ -104,7 +104,7 @@ function mapStrToCourse(course: string | null): Course {
     return match ?? getRandomCourse();
 }
 
-function calculateAge(birthDate: string): number {
+export function calculateAge(birthDate: string): number {
     const birth = new Date(birthDate);
     const now = new Date();
     const age = now.getFullYear() - birth.getFullYear();
