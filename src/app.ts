@@ -1,14 +1,13 @@
-import { RANDOM_USER_MOCK, ADDITIONAL_USERS, Gender } from "./FE4U-Lab2-mock.js";
-import { COURSES, Course, Teacher, mergeRandomAndAdditionalUsers, calculateAge, getRandomHexColor } from "./task1.js";
-import { isEmail, isFirstCharCapitalLetter, isPhoneNumber } from "./task2.js";
-import { filterTeachers, TeacherFilter } from "./task3.js";
-import { sortTeachers, TeacherSortProp } from "./task4.js";
-import { searchTeachers } from "./task5.js";
+import { COURSES, Course, Gender, Teacher, calculateAge, getRandomHexColor } from "./teacher.js";
+import { isEmail, isFirstCharCapitalLetter, isPhoneNumber } from "./validation.js";
+import { filterTeachers, sortTeachers, searchTeachers, TeacherFilter, TeacherSortProp } from "./teacher-query.js";
+import { fetchRandomTeachers, fetchSavedTeachers, saveTeacher } from "./api.js";
 
+const INITIAL_COUNT = 50;
 const PAGE_SIZE = 10;
 const DEFAULT_COUNTRIES = ["Ukraine", "USA", "UK", "Germany", "France"];
 
-const teachers: Teacher[] = mergeRandomAndAdditionalUsers(RANDOM_USER_MOCK, ADDITIONAL_USERS);
+const teachers: Teacher[] = [];
 
 const state = {
     filter: {} as TeacherFilter,
@@ -16,6 +15,8 @@ const state = {
     sort: { prop: "full_name" as TeacherSortProp, isDesc: false },
     page: 0,
     selectedId: null as string | null,
+    loading: false,
+    error: null as string | null,
 };
 
 function $<T extends Element>(selector: string): T {
@@ -40,6 +41,10 @@ function getAllCountries(): string[] {
         if (t.country != undefined) countries.add(t.country);
     }
     return [...countries].sort((a, b) => a.localeCompare(b));
+}
+
+function getVisibleTeachers(): Teacher[] {
+    return searchTeachers(filterTeachers(teachers, state.filter), state.search);
 }
 
 function photoHtml(t: Teacher): string {
@@ -75,15 +80,22 @@ function teacherCardHtml(t: Teacher, withCourse: boolean): string {
 }
 
 function renderTopTeachers(): void {
-    const list = $<HTMLDivElement>(".top-teachers-list");
-    const visible = searchTeachers(filterTeachers(teachers, state.filter), state.search);
-    list.innerHTML = visible.length > 0
+    const visible = getVisibleTeachers();
+    let message = "No teachers found";
+    if (teachers.length === 0 && state.loading) message = "Loading teachers...";
+    if (teachers.length === 0 && state.error !== null) message = state.error;
+    $<HTMLDivElement>(".top-teachers-list").innerHTML = visible.length > 0
         ? visible.map(t => teacherCardHtml(t, true)).join("")
-        : `<p class="empty-message">No teachers found</p>`;
+        : `<p class="empty-message">${escapeHtml(message)}</p>`;
 }
 
 function renderStatistics(): void {
-    const sorted = sortTeachers(teachers, state.sort.prop, state.sort.isDesc);
+    const visible = getVisibleTeachers();
+    const percent = teachers.length > 0 ? (100 * visible.length / teachers.length).toFixed(1) : "0";
+    $<HTMLParagraphElement>(".statistics-summary").textContent =
+        `Showing ${visible.length} of ${teachers.length} teachers (${percent}%)`;
+
+    const sorted = sortTeachers(visible, state.sort.prop, state.sort.isDesc);
     const pageCount = Math.max(1, Math.ceil(sorted.length / PAGE_SIZE));
     state.page = Math.min(state.page, pageCount - 1);
     const pageItems = sorted.slice(state.page * PAGE_SIZE, (state.page + 1) * PAGE_SIZE);
@@ -106,7 +118,9 @@ function renderStatistics(): void {
 
     const pages = Array.from({ length: pageCount }, (_, i) =>
         `<a href="#" data-page="${i}" class="${i === state.page ? "active" : ""}">${i + 1}</a>`);
-    $<HTMLDivElement>(".pagination").innerHTML = pages.join("");
+    const next = `<button type="button" class="pagination-next" ${state.loading ? "disabled" : ""}>${state.loading ? "Loading..." : "Next &raquo;"}</button>`;
+    const error = state.error !== null ? `<span class="pagination-error">${escapeHtml(state.error)}</span>` : "";
+    $<HTMLDivElement>(".pagination").innerHTML = pages.join("") + next + error;
 }
 
 function renderFavorites(): void {
@@ -141,6 +155,18 @@ function renderTeacherInfo(t: Teacher): void {
     }
 }
 
+function renderCountries(): void {
+    const filterSelect = $<HTMLSelectElement>("#country-select");
+    const filterValue = filterSelect.value;
+    fillSelect(filterSelect, getAllCountries(), true);
+    filterSelect.value = filterValue;
+
+    const formSelect = $<HTMLSelectElement>("#new-teacher-country");
+    const formValue = formSelect.value;
+    fillSelect(formSelect, getAllCountries(), false);
+    if (formValue !== "") formSelect.value = formValue;
+}
+
 function renderAll(): void {
     renderTopTeachers();
     renderStatistics();
@@ -158,6 +184,46 @@ function openTeacherInfo(id: string): void {
 function fillSelect(select: HTMLSelectElement, values: readonly string[], keepFirst: boolean): void {
     const first = keepFirst ? select.options[0]?.outerHTML ?? "" : "";
     select.innerHTML = first + values.map(v => `<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join("");
+}
+
+function addTeachers(added: Teacher[]): void {
+    const ids = new Set(teachers.map(t => t.id));
+    teachers.push(...added.filter(t => !ids.has(t.id)));
+    renderCountries();
+}
+
+async function loadTeachers(count: number): Promise<void> {
+    state.loading = true;
+    state.error = null;
+    renderAll();
+    try {
+        addTeachers(await fetchRandomTeachers(count));
+    } catch (err) {
+        console.error(err);
+        state.error = "Failed to load teachers, try again";
+    } finally {
+        state.loading = false;
+        renderAll();
+    }
+}
+
+async function loadSavedTeachers(): Promise<void> {
+    try {
+        addTeachers(await fetchSavedTeachers());
+        renderAll();
+    } catch (err) {
+        console.warn("json-server is not available, added teachers won't be saved", err);
+    }
+}
+
+// Moves to the next page; on the last page requests next PAGE_SIZE users first
+async function showNextPage(): Promise<void> {
+    if ((state.page + 1) * PAGE_SIZE >= getVisibleTeachers().length) {
+        await loadTeachers(PAGE_SIZE);
+    }
+    const pageCount = Math.ceil(getVisibleTeachers().length / PAGE_SIZE);
+    state.page = Math.min(state.page + 1, Math.max(0, pageCount - 1));
+    renderStatistics();
 }
 
 function readFilter(form: HTMLFormElement): TeacherFilter {
@@ -180,10 +246,11 @@ function readFilter(form: HTMLFormElement): TeacherFilter {
 
 function setupFilters(): void {
     const form = $<HTMLFormElement>(".teachers-filter-form");
-    fillSelect($<HTMLSelectElement>("#country-select"), getAllCountries(), true);
     form.addEventListener("change", () => {
         state.filter = readFilter(form);
+        state.page = 0;
         renderTopTeachers();
+        renderStatistics();
     });
 }
 
@@ -193,13 +260,17 @@ function setupSearch(): void {
     form.addEventListener("submit", e => {
         e.preventDefault();
         state.search = input.value;
+        state.page = 0;
         renderTopTeachers();
+        renderStatistics();
         $<HTMLElement>("#top-teachers").scrollIntoView({ behavior: "smooth" });
     });
     input.addEventListener("input", () => {
         if (input.value.trim() === "") {
             state.search = "";
+            state.page = 0;
             renderTopTeachers();
+            renderStatistics();
         }
     });
 }
@@ -214,7 +285,12 @@ function setupStatistics(): void {
         renderStatistics();
     });
     $<HTMLDivElement>(".pagination").addEventListener("click", e => {
-        const link = (e.target as Element).closest<HTMLAnchorElement>("a[data-page]");
+        const target = e.target as Element;
+        if (target.closest(".pagination-next") !== null) {
+            void showNextPage();
+            return;
+        }
+        const link = target.closest<HTMLAnchorElement>("a[data-page]");
         if (link === null) return;
         e.preventDefault();
         state.page = Number(link.dataset.page);
@@ -235,6 +311,7 @@ function setupTeacherInfo(): void {
         t.favorite = !t.favorite;
         renderTeacherInfo(t);
         renderTopTeachers();
+        renderStatistics();
         renderFavorites();
     });
 }
@@ -297,21 +374,26 @@ function createTeacherFromForm(data: FormData): Teacher {
 function setupAddTeacherForm(): void {
     const form = $<HTMLFormElement>(".add-teacher-form");
     const error = $<HTMLParagraphElement>(".add-teacher-form .form-error");
+    const submit = form.querySelector<HTMLButtonElement>("[type=submit]");
     fillSelect($<HTMLSelectElement>("#new-teacher-speciality"), COURSES, false);
-    fillSelect($<HTMLSelectElement>("#new-teacher-country"), getAllCountries(), false);
 
-    form.addEventListener("submit", e => {
+    form.addEventListener("submit", async e => {
         e.preventDefault();
         const data = new FormData(form);
         const message = validateNewTeacher(data);
         error.textContent = message ?? "";
         if (message !== null) return;
 
-        teachers.push(createTeacherFromForm(data));
-        const countrySelect = $<HTMLSelectElement>("#country-select");
-        const selected = countrySelect.value;
-        fillSelect(countrySelect, getAllCountries(), true);
-        countrySelect.value = selected;
+        if (submit !== null) submit.disabled = true;
+        try {
+            addTeachers([await saveTeacher(createTeacherFromForm(data))]);
+        } catch (err) {
+            console.error(err);
+            error.textContent = "Failed to save teacher. Is json-server running (npm run server)?";
+            return;
+        } finally {
+            if (submit !== null) submit.disabled = false;
+        }
         renderAll();
         form.reset();
         $<HTMLDialogElement>("#add-teacher-popup").hidePopover();
@@ -324,4 +406,6 @@ setupStatistics();
 setupTeacherInfo();
 setupFavoritesCarousel();
 setupAddTeacherForm();
-renderAll();
+renderCountries();
+void loadTeachers(INITIAL_COUNT);
+void loadSavedTeachers();

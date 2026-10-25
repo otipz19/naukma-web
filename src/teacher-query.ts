@@ -1,4 +1,25 @@
-import { Teacher } from "./task1.js";
+import { Gender, Teacher } from "./teacher.js";
+
+export type TeacherFilter = {
+    country?: string;
+    minAge?: number;
+    maxAge?: number;
+    gender?: Gender;
+    favorite?: boolean;
+    withPhoto?: boolean;
+};
+
+export function filterTeachers(teachers: Teacher[], filter: TeacherFilter): Teacher[] {
+    const { country, minAge, maxAge, gender, favorite, withPhoto } = filter;
+    return teachers.filter(t => {
+        return (country == undefined || t.country === country)
+        && (minAge == undefined || (t.age != undefined && t.age >= minAge))
+        && (maxAge == undefined || (t.age != undefined && t.age <= maxAge))
+        && (gender == undefined || t.gender === gender)
+        && (favorite == undefined || t.favorite === favorite)
+        && (!withPhoto || t.picture_large != undefined);
+    });
+}
 
 export type TeacherSortProp = 'full_name' | 'course' | 'age' | 'b_date' | 'country';
 
@@ -30,3 +51,17 @@ function compareMaybeUndefined<P>(a: Teacher, b: Teacher, selector: (t: Teacher)
     if (r == undefined) return -1;
     return comparator(l, r);
 }
+
+// Matches by name or note substring (case-insensitive), or by exact age when query is a number
+export function searchTeachers(teachers: Teacher[], query: string): Teacher[] {
+    const q = query.trim().toLowerCase();
+    if (q.length === 0) {
+        return teachers;
+    }
+    const age = /^\d+$/.test(q) ? Number(q) : undefined;
+    return teachers.filter(t =>
+        t.full_name.toLowerCase().includes(q)
+        || (t.note != undefined && t.note.toLowerCase().includes(q))
+        || (age != undefined && t.age === age));
+}
+

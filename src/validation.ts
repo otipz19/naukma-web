@@ -1,11 +1,3 @@
-import { Teacher } from "./task1.js";
-
-export function validateTeacher(teacher: Teacher): boolean {
-    const { full_name, gender, note, state, city, country, age, phone, email } = teacher;
-    const requireCapital = [full_name, gender, note, state, city, country];
-    return requireCapital.every(s => isFirstCharCapitalLetter(s)) && age != undefined && isPhoneNumber(phone) && isEmail(email)
-}
-
 export function isFirstCharCapitalLetter(str: string | undefined | null): boolean {
     if (str == undefined || str.length <= 0) {
         return false;
