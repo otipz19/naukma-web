@@ -1,12 +1,4 @@
-import { Teacher } from "./task1.js";
-
-export function validateTeacher(teacher: Teacher): boolean {
-    const { full_name, gender, note, state, city, country, age, phone, email } = teacher;
-    const requireCapital = [full_name, gender, note, state, city, country];
-    return requireCapital.every(s => isFirstCharCapitalLetter(s)) && age != undefined && isPhoneNumber(phone) && isEmail(email)
-}
-
-function isFirstCharCapitalLetter(str: string | undefined | null): boolean {
+export function isFirstCharCapitalLetter(str: string | undefined | null): boolean {
     if (str == undefined || str.length <= 0) {
         return false;
     }
@@ -16,7 +8,7 @@ function isFirstCharCapitalLetter(str: string | undefined | null): boolean {
     return ch === ch.toUpperCase() && ch !== ch.toLowerCase();
 }
 
-function isPhoneNumber(str: string | undefined | null): boolean {
+export function isPhoneNumber(str: string | undefined | null): boolean {
     if (str == undefined) {
         return false;
     }
@@ -26,7 +18,7 @@ function isPhoneNumber(str: string | undefined | null): boolean {
     return regex.test(str);
 }
 
-function isEmail(str: string | undefined | null): boolean {
+export function isEmail(str: string | undefined | null): boolean {
     if (str == undefined) {
         return false;
     }
