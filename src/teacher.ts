@@ -1,3 +1,6 @@
+import dayjs from "dayjs";
+import { padStart, random, sample } from "lodash-es";
+
 export type Gender = "male" | "female";
 export type Coordinates = { latitude: string; longitude: string };
 export type Timezone = { offset: string; description: string };
@@ -43,19 +46,20 @@ export interface Teacher {
 }
 
 export function getRandomCourse(): Course {
-    return COURSES[Math.floor(Math.random() * COURSES.length)]!;
+    return sample(COURSES) ?? COURSES[0];
 }
 
 export function getRandomHexColor(): string {
-    return `#${Math.floor(Math.random() * 0x1000000).toString(16).padStart(6, "0")}`;
+    return `#${padStart(random(0, 0xffffff).toString(16), 6, "0")}`;
 }
 
 export function calculateAge(birthDate: string): number {
-    const birth = new Date(birthDate);
-    const now = new Date();
-    const age = now.getFullYear() - birth.getFullYear();
-    const hadBirthdayThisYear =
-        now.getMonth() > birth.getMonth() ||
-        (now.getMonth() === birth.getMonth() && now.getDate() >= birth.getDate());
-    return hadBirthdayThisYear ? age : age - 1;
+    return dayjs().diff(dayjs(birthDate), "year");
+}
+
+export function daysUntilNextBirthday(birthDate: string): number {
+    const today = dayjs().startOf("day");
+    const birthdayThisYear = dayjs(birthDate).startOf("day").year(today.year());
+    const next = birthdayThisYear.isBefore(today) ? birthdayThisYear.add(1, "year") : birthdayThisYear;
+    return next.diff(today, "day");
 }

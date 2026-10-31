@@ -1,10 +1,14 @@
-import { COURSES, Course, Gender, Teacher, calculateAge, getRandomHexColor } from "./teacher.js";
-import { isEmail, isFirstCharCapitalLetter, isPhoneNumber } from "./validation.js";
+import dayjs from "dayjs";
+import { capitalize, compact, differenceBy, filter, find, isNil, join, map, round, sortBy, toUpper, trim, uniq, uniqBy, words } from "lodash-es";
+import { COURSES, Course, Gender, Teacher, calculateAge, daysUntilNextBirthday, getRandomHexColor } from "./teacher.js";
+import { isEmail, isFirstCharCapitalLetter, isFullName, isPastDate, isPhoneNumber } from "./validation.js";
 import { filterTeachers, sortTeachers, searchTeachers, TeacherFilter, TeacherSortProp } from "./teacher-query.js";
 import { fetchRandomTeachers, fetchSavedTeachers, saveTeacher } from "./api.js";
+import { showTeacherLocation } from "./teacher-map.js";
+import { renderPieChart, renderReport, ReportKind, StatisticsGroup } from "./statistics.js";
 
 const INITIAL_COUNT = 50;
-const PAGE_SIZE = 10;
+const LOAD_MORE_COUNT = 10;
 const DEFAULT_COUNTRIES = ["Ukraine", "USA", "UK", "Germany", "France"];
 
 const teachers: Teacher[] = [];
@@ -13,8 +17,10 @@ const state = {
     filter: {} as TeacherFilter,
     search: "",
     sort: { prop: "full_name" as TeacherSortProp, isDesc: false },
-    page: 0,
+    statisticsView: "chart" as "chart" | ReportKind,
+    statisticsGroup: "course" as StatisticsGroup,
     selectedId: null as string | null,
+    mapVisible: false,
     loading: false,
     error: null as string | null,
 };
@@ -32,19 +38,19 @@ function escapeHtml(str: string): string {
 }
 
 function getInitials(fullName: string): string {
-    return fullName.split(/\s+/).map(p => p.charAt(0)).join(".").toUpperCase();
+    return toUpper(join(map(words(fullName, /\S+/g), p => p.charAt(0)), "."));
 }
 
 function getAllCountries(): string[] {
-    const countries = new Set<string>(DEFAULT_COUNTRIES);
-    for (const t of teachers) {
-        if (t.country != undefined) countries.add(t.country);
-    }
-    return [...countries].sort((a, b) => a.localeCompare(b));
+    return sortBy(uniq([...DEFAULT_COUNTRIES, ...compact(map(teachers, "country"))]));
 }
 
 function getVisibleTeachers(): Teacher[] {
     return searchTeachers(filterTeachers(teachers, state.filter), state.search);
+}
+
+function findTeacher(id: string | null): Teacher | undefined {
+    return find(teachers, { id: id ?? "" });
 }
 
 function photoHtml(t: Teacher): string {
@@ -85,46 +91,37 @@ function renderTopTeachers(): void {
     if (teachers.length === 0 && state.loading) message = "Loading teachers...";
     if (teachers.length === 0 && state.error !== null) message = state.error;
     $<HTMLDivElement>(".top-teachers-list").innerHTML = visible.length > 0
-        ? visible.map(t => teacherCardHtml(t, true)).join("")
+        ? sortTeachers(visible, state.sort.prop, state.sort.isDesc).map(t => teacherCardHtml(t, true)).join("")
         : `<p class="empty-message">${escapeHtml(message)}</p>`;
 }
 
 function renderStatistics(): void {
     const visible = getVisibleTeachers();
-    const percent = teachers.length > 0 ? (100 * visible.length / teachers.length).toFixed(1) : "0";
-    $<HTMLParagraphElement>(".statistics-summary").textContent =
-        `Showing ${visible.length} of ${teachers.length} teachers (${percent}%)`;
+    const percent = teachers.length > 0 ? round(100 * visible.length / teachers.length, 1) : 0;
+    $<HTMLParagraphElement>(".statistics-summary").textContent = state.statisticsView === "chart"
+        ? `Showing ${visible.length} of ${teachers.length} teachers (${percent}%)`
+        : `All ${teachers.length} loaded teachers`;
 
-    const sorted = sortTeachers(visible, state.sort.prop, state.sort.isDesc);
-    const pageCount = Math.max(1, Math.ceil(sorted.length / PAGE_SIZE));
-    state.page = Math.min(state.page, pageCount - 1);
-    const pageItems = sorted.slice(state.page * PAGE_SIZE, (state.page + 1) * PAGE_SIZE);
+    document.querySelectorAll<HTMLButtonElement>(".statistics-view-btn").forEach(btn =>
+        btn.classList.toggle("active", btn.dataset.view === state.statisticsView));
+    document.querySelectorAll<HTMLElement>(".statistics-view").forEach(view =>
+        view.hidden = view.dataset.view !== (state.statisticsView === "chart" ? "chart" : "report"));
+    $<HTMLDivElement>(".statistics-group").hidden = state.statisticsView !== "chart";
 
-    $<HTMLTableSectionElement>(".statistics-table tbody").innerHTML = pageItems.map(t => `
-        <tr>
-            <td>${escapeHtml(t.full_name)}</td>
-            <td>${escapeHtml(t.course)}</td>
-            <td>${t.age ?? ""}</td>
-            <td>${t.b_date != undefined ? new Date(t.b_date).toLocaleDateString("uk-UA") : ""}</td>
-            <td>${escapeHtml(t.gender)}</td>
-            <td>${escapeHtml(t.country ?? "")}</td>
-        </tr>`).join("");
+    if (state.statisticsView === "chart") {
+        renderPieChart($<HTMLCanvasElement>("#statistics-chart"), visible, state.statisticsGroup);
+    } else {
+        renderReport($<HTMLDivElement>("#statistics-report"), teachers, state.statisticsView);
+    }
 
-    document.querySelectorAll<HTMLTableCellElement>(".statistics-table th[data-sort]").forEach(th => {
-        const active = th.dataset.sort === state.sort.prop;
-        th.classList.toggle("sorted", active);
-        th.classList.toggle("desc", active && state.sort.isDesc);
-    });
-
-    const pages = Array.from({ length: pageCount }, (_, i) =>
-        `<a href="#" data-page="${i}" class="${i === state.page ? "active" : ""}">${i + 1}</a>`);
-    const next = `<button type="button" class="pagination-next" ${state.loading ? "disabled" : ""}>${state.loading ? "Loading..." : "Next &raquo;"}</button>`;
-    const error = state.error !== null ? `<span class="pagination-error">${escapeHtml(state.error)}</span>` : "";
-    $<HTMLDivElement>(".pagination").innerHTML = pages.join("") + next + error;
+    const loadMore = $<HTMLButtonElement>(".load-more-btn");
+    loadMore.disabled = state.loading;
+    loadMore.textContent = state.loading ? "Loading..." : `Load ${LOAD_MORE_COUNT} more teachers`;
+    $<HTMLSpanElement>(".statistics-error").textContent = state.error ?? "";
 }
 
 function renderFavorites(): void {
-    const favorites = teachers.filter(t => t.favorite);
+    const favorites = filter(teachers, "favorite");
     $<HTMLDivElement>(".favorites-cards").innerHTML = favorites.length > 0
         ? favorites.map(t => teacherCardHtml(t, false)).join("")
         : `<p class="empty-message">No favorite teachers yet</p>`;
@@ -137,9 +134,9 @@ function renderTeacherInfo(t: Teacher): void {
     q<HTMLDivElement>(".teacher-dialog-photo").innerHTML = photoHtml(t);
     q<HTMLHeadingElement>(".teacher-dialog-name").textContent = t.full_name;
     q<HTMLDivElement>(".teacher-dialog-specialty").textContent = t.course;
-    q<HTMLDivElement>(".teacher-dialog-location").textContent = [t.city, t.country].filter(Boolean).join(", ");
-    q<HTMLDivElement>(".teacher-dialog-age-gender").textContent =
-        [t.age, t.gender.charAt(0).toUpperCase() + t.gender.slice(1)].filter(v => v != undefined).join(", ");
+    q<HTMLDivElement>(".teacher-dialog-location").textContent = join(compact([t.city, t.country]), ", ");
+    q<HTMLDivElement>(".teacher-dialog-age-gender").textContent = join(compact([t.age, capitalize(t.gender)]), ", ");
+    q<HTMLDivElement>(".teacher-dialog-birthday").textContent = birthdayText(t);
     const email = q<HTMLAnchorElement>(".teacher-dialog-email");
     email.textContent = t.email ?? "";
     email.href = t.email != undefined ? `mailto:${t.email}` : "";
@@ -147,11 +144,24 @@ function renderTeacherInfo(t: Teacher): void {
     q<HTMLParagraphElement>(".teacher-dialog-description").textContent = t.note ?? "";
     q<HTMLButtonElement>(".teacher-dialog-star-btn").classList.toggle("active", t.favorite);
 
-    const map = q<HTMLAnchorElement>(".teacher-dialog-map-link");
-    map.hidden = t.coordinates == undefined;
-    if (t.coordinates != undefined) {
-        const { latitude, longitude } = t.coordinates;
-        map.href = `https://www.openstreetmap.org/?mlat=${latitude}&mlon=${longitude}#map=6/${latitude}/${longitude}`;
+}
+
+function birthdayText(t: Teacher): string {
+    if (isNil(t.b_date)) return "";
+    const days = daysUntilNextBirthday(t.b_date);
+    const date = dayjs(t.b_date).format("DD.MM.YYYY");
+    if (days === 0) return `Birthday: ${date}, today!`;
+    return `Birthday: ${date}, ${days} ${days === 1 ? "day" : "days"} until next birthday`;
+}
+
+function renderTeacherMap(t: Teacher): void {
+    const toggle = $<HTMLButtonElement>(".teacher-dialog-map-toggle");
+    const container = $<HTMLDivElement>(".teacher-dialog-map");
+    toggle.hidden = isNil(t.coordinates);
+    toggle.textContent = state.mapVisible ? "hide map" : "show map";
+    container.hidden = isNil(t.coordinates) || !state.mapVisible;
+    if (!container.hidden && !isNil(t.coordinates)) {
+        showTeacherLocation(container, t.coordinates, join(compact([t.full_name, t.city, t.country]), ", "));
     }
 }
 
@@ -174,11 +184,12 @@ function renderAll(): void {
 }
 
 function openTeacherInfo(id: string): void {
-    const t = teachers.find(t => t.id === id);
+    const t = findTeacher(id);
     if (t === undefined) return;
     state.selectedId = id;
     renderTeacherInfo(t);
     $<HTMLDialogElement>("#teacher-info-popup").showPopover();
+    renderTeacherMap(t);
 }
 
 function fillSelect(select: HTMLSelectElement, values: readonly string[], keepFirst: boolean): void {
@@ -187,8 +198,7 @@ function fillSelect(select: HTMLSelectElement, values: readonly string[], keepFi
 }
 
 function addTeachers(added: Teacher[]): void {
-    const ids = new Set(teachers.map(t => t.id));
-    teachers.push(...added.filter(t => !ids.has(t.id)));
+    teachers.push(...differenceBy(uniqBy(added, "id"), teachers, "id"));
     renderCountries();
 }
 
@@ -216,16 +226,6 @@ async function loadSavedTeachers(): Promise<void> {
     }
 }
 
-// Moves to the next page; on the last page requests next PAGE_SIZE users first
-async function showNextPage(): Promise<void> {
-    if ((state.page + 1) * PAGE_SIZE >= getVisibleTeachers().length) {
-        await loadTeachers(PAGE_SIZE);
-    }
-    const pageCount = Math.ceil(getVisibleTeachers().length / PAGE_SIZE);
-    state.page = Math.min(state.page + 1, Math.max(0, pageCount - 1));
-    renderStatistics();
-}
-
 function readFilter(form: HTMLFormElement): TeacherFilter {
     const data = new FormData(form);
     const filter: TeacherFilter = {};
@@ -248,7 +248,8 @@ function setupFilters(): void {
     const form = $<HTMLFormElement>(".teachers-filter-form");
     form.addEventListener("change", () => {
         state.filter = readFilter(form);
-        state.page = 0;
+        const sort = String(new FormData(form).get("sort"));
+        state.sort = { prop: trim(sort, "-") as TeacherSortProp, isDesc: sort.startsWith("-") };
         renderTopTeachers();
         renderStatistics();
     });
@@ -260,7 +261,6 @@ function setupSearch(): void {
     form.addEventListener("submit", e => {
         e.preventDefault();
         state.search = input.value;
-        state.page = 0;
         renderTopTeachers();
         renderStatistics();
         $<HTMLElement>("#top-teachers").scrollIntoView({ behavior: "smooth" });
@@ -268,7 +268,6 @@ function setupSearch(): void {
     input.addEventListener("input", () => {
         if (input.value.trim() === "") {
             state.search = "";
-            state.page = 0;
             renderTopTeachers();
             renderStatistics();
         }
@@ -276,26 +275,17 @@ function setupSearch(): void {
 }
 
 function setupStatistics(): void {
-    $<HTMLTableSectionElement>(".statistics-table thead").addEventListener("click", e => {
-        const th = (e.target as Element).closest<HTMLTableCellElement>("th[data-sort]");
-        if (th === null) return;
-        const prop = th.dataset.sort as TeacherSortProp;
-        state.sort = { prop, isDesc: state.sort.prop === prop ? !state.sort.isDesc : false };
-        state.page = 0;
+    $<HTMLDivElement>(".statistics-views").addEventListener("click", e => {
+        const btn = (e.target as Element).closest<HTMLButtonElement>(".statistics-view-btn");
+        if (btn?.dataset.view == undefined) return;
+        state.statisticsView = btn.dataset.view as typeof state.statisticsView;
         renderStatistics();
     });
-    $<HTMLDivElement>(".pagination").addEventListener("click", e => {
-        const target = e.target as Element;
-        if (target.closest(".pagination-next") !== null) {
-            void showNextPage();
-            return;
-        }
-        const link = target.closest<HTMLAnchorElement>("a[data-page]");
-        if (link === null) return;
-        e.preventDefault();
-        state.page = Number(link.dataset.page);
+    $<HTMLSelectElement>("#statistics-group-select").addEventListener("change", e => {
+        state.statisticsGroup = (e.target as HTMLSelectElement).value as StatisticsGroup;
         renderStatistics();
     });
+    $<HTMLButtonElement>(".load-more-btn").addEventListener("click", () => void loadTeachers(LOAD_MORE_COUNT));
 }
 
 function setupTeacherInfo(): void {
@@ -306,13 +296,19 @@ function setupTeacherInfo(): void {
         });
     }
     $<HTMLButtonElement>(".teacher-dialog-star-btn").addEventListener("click", () => {
-        const t = teachers.find(t => t.id === state.selectedId);
+        const t = findTeacher(state.selectedId);
         if (t === undefined) return;
         t.favorite = !t.favorite;
         renderTeacherInfo(t);
         renderTopTeachers();
         renderStatistics();
         renderFavorites();
+    });
+    $<HTMLButtonElement>(".teacher-dialog-map-toggle").addEventListener("click", () => {
+        const t = findTeacher(state.selectedId);
+        if (t === undefined) return;
+        state.mapVisible = !state.mapVisible;
+        renderTeacherMap(t);
     });
 }
 
@@ -324,11 +320,10 @@ function setupFavoritesCarousel(): void {
 }
 
 function validateNewTeacher(data: FormData): string | null {
-    const name = String(data.get("name") ?? "").trim();
-    if (name.split(/\s+/).length < 2 || !name.split(/\s+/).every(p => isFirstCharCapitalLetter(p))) {
+    if (!isFullName(String(data.get("name") ?? ""))) {
         return "Name must contain first and last name, each starting with a capital letter";
     }
-    const city = String(data.get("city") ?? "").trim();
+    const city = trim(String(data.get("city") ?? ""));
     if (city !== "" && !isFirstCharCapitalLetter(city)) {
         return "City must start with a capital letter";
     }
@@ -338,8 +333,7 @@ function validateNewTeacher(data: FormData): string | null {
     if (!isPhoneNumber(String(data.get("phone") ?? ""))) {
         return "Phone must be in international format, e.g. +380961234567";
     }
-    const dob = String(data.get("dob") ?? "");
-    if (dob === "" || new Date(dob).getTime() >= Date.now()) {
+    if (!isPastDate(String(data.get("dob") ?? ""))) {
         return "Date of birth must be in the past";
     }
     if (data.get("sex") == null) {
@@ -349,7 +343,7 @@ function validateNewTeacher(data: FormData): string | null {
 }
 
 function createTeacherFromForm(data: FormData): Teacher {
-    const dob = new Date(String(data.get("dob"))).toISOString();
+    const dob = dayjs(String(data.get("dob"))).toISOString();
     const city = String(data.get("city") ?? "").trim();
     const note = String(data.get("notes") ?? "").trim();
     const gender = data.get("sex") as Gender;

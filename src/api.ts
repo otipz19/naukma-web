@@ -1,3 +1,4 @@
+import { join, map, pick } from "lodash-es";
 import { Gender, Coordinates, Timezone, Teacher, getRandomCourse, getRandomHexColor } from "./teacher.js";
 
 const RANDOM_USER_API = "https://randomuser.me/api/";
@@ -37,26 +38,19 @@ async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
 
 export async function fetchRandomTeachers(count: number): Promise<Teacher[]> {
     const { results } = await fetchJson<RandomUserResponse>(`${RANDOM_USER_API}?results=${count}`);
-    return results.map(mapRandomUserToTeacher);
+    return map(results, mapRandomUserToTeacher);
 }
 
 function mapRandomUserToTeacher(user: RandomUser): Teacher {
     const { name, location, login, dob, picture } = user;
     return {
         id: login.uuid,
-        gender: user.gender,
+        ...pick(user, ["gender", "email", "phone"]),
         title: name.title,
-        full_name: `${name.first} ${name.last}`,
-        city: location.city,
-        state: location.state,
-        country: location.country,
-        postcode: location.postcode,
-        coordinates: location.coordinates,
-        timezone: location.timezone,
-        email: user.email,
+        full_name: join([name.first, name.last], " "),
+        ...pick(location, ["city", "state", "country", "postcode", "coordinates", "timezone"]),
         b_date: dob.date,
         age: dob.age,
-        phone: user.phone,
         picture_large: picture.large,
         picture_thumbnail: picture.thumbnail,
         favorite: false,

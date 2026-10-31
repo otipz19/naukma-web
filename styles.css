@@ -236,128 +236,67 @@ h2 {
     z-index: 10;
 }
 
-div:has(.statistics-table) {
-    overflow: auto;
-}
-
-.statistics-table {
-    width: 100%;
-    border-collapse: collapse;
-    color: #222222;
-}
-
-.statistics-table thead tr {
-    border-bottom: 1.5px solid black
-}
-
-.statistics-table thead th {
-    position: relative;
-    padding: 12px 16px;
-    text-align: center;
-    font-weight: normal;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.statistics-table thead th:hover {
-    background-color: #fafafa;
-}
-
-.statistics-table thead th::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: -1.5px;
-    width: 100%;
-    height: 5px;
-    background-color: black;
-    opacity: 0;
-    transform: scale(0);
-    transition: all 0.2s ease;
-}
-
-.statistics-table thead th:hover::before {
-    opacity: 1;
-    transform: scale(1);
-}
-
-.statistics-table thead th::after {
-    content: "↓";
-    color: #62a6c6;
-    font-size: 14px;
-    margin-left: 10px;
-    opacity: 0;
-    transition: all 0.2s ease;
-}
-
-.statistics-table thead th:not([data-sort]) {
-    cursor: default;
-}
-
-.statistics-table thead th:not([data-sort])::after {
-    content: none;
-}
-
-.statistics-table thead th:hover::after,
-.statistics-table thead th.sorted::after {
-    opacity: 1;
-}
-
-.statistics-table thead th.sorted.desc::after {
-    content: "↑";
-}
-
-.statistics-table :is(td, th):first-child {
-    text-align: left;
-}
-
-.statistics-table tbody td {
-    padding: 10px 16px;
-    text-align: center;
-}
-
-.statistics-table tbody tr:nth-child(even) {
-    background-color: #f9f5f9;
-}
-
-.pagination {
+.statistics-toolbar {
     display: flex;
-    gap: 12px;
-    margin-top: 28px;
-    font-size: 0.85rem;
-}
-
-.pagination a {
-    text-decoration: none;
-    color: #0284c7;
-}
-
-.pagination a.active {
-    font-weight: 700;
-    color: black;
-}
-
-.pagination {
     flex-wrap: wrap;
+    justify-content: space-between;
     align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
 }
 
-.pagination-next {
+.statistics-views {
+    display: flex;
+    gap: 8px;
+}
+
+.statistics-view-btn {
+    padding: 8px 16px;
+    border: 1px solid var(--color-grey);
+    border-radius: 6px;
     background: none;
-    border: none;
-    padding: 0;
     font: inherit;
-    color: #0284c7;
+    font-size: 0.9rem;
     cursor: pointer;
+    transition: all 0.2s ease;
 }
 
-.pagination-next:disabled {
-    color: #71717a;
+.statistics-view-btn:hover {
+    border-color: var(--color-accent);
+}
+
+.statistics-view-btn.active {
+    background-color: var(--color-accent);
+    border-color: var(--color-accent);
+    color: white;
+}
+
+.statistics-group[hidden],
+.statistics-view[hidden] {
+    display: none;
+}
+
+.statistics-chart {
+    position: relative;
+    height: 380px;
+}
+
+.statistics-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 28px;
+}
+
+.load-more-btn:disabled {
+    opacity: 0.6;
     cursor: default;
 }
 
-.pagination-error {
+.statistics-error {
     color: #dc2626;
+    font-size: 0.85rem;
 }
 
 .statistics-summary {
@@ -605,11 +544,25 @@ h1:hover {
     margin-bottom: 14px;
 }
 
-.teacher-dialog-map-link {
+.teacher-dialog-map-toggle {
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
     font-size: 0.85rem;
     color: #0284c7;
     text-decoration: underline;
-    display: inline-block;
+    cursor: pointer;
+}
+
+.teacher-dialog-map-toggle[hidden],
+.teacher-dialog-map[hidden] {
+    display: none;
+}
+
+.teacher-dialog-map {
+    height: 280px;
+    margin-top: 12px;
 }
 
 .add-teacher-dialog {
@@ -826,11 +779,11 @@ input[type="color"]::-webkit-color-swatch {
         width: 130px;
     }
 
-    .statistics-table {
-        min-width: 550px;
+    .statistics-chart {
+        height: 300px;
     }
 
-    .pagination {
+    .statistics-actions {
         justify-content: center;
         margin-top: 20px;
     }
